@@ -1,7 +1,7 @@
 using System.Threading.Tasks.Dataflow;
 using UnityEngine;
 
-public class BallController : MonoBehaviiour
+public class BallController : MonoBehaviour
 {
     public float speed = 5f;
     private Vector3 direction;
