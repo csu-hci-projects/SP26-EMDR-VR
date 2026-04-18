@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
         if (CurrentState != GameState.Idle) return;
         CurrentState = GameState.Playing;
         ball.Launch();
-        Debug.Log("Game Started");
+        UnityEngine.Debug.Log("Game Started");
     }
 
     public void StopGame()
@@ -26,14 +26,14 @@ public class GameManager : MonoBehaviour
         if (CurrentState != GameState.Playing) return;
         CurrentState = GameState.Stopped;
         ball.Stop();
-        Debug.Log("Game Stopped");
+        UnityEngine.Debug.Log("Game Stopped");
     }
 
     public void ResetGame()
     {
         CurrentState = GameState.Idle;
         ball.ResetBall();
-        Debug.Log("Game Reset");
+        UnityEngine.Debug.Log("Game Reset");
     }
 
 }

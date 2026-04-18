@@ -4,7 +4,7 @@ public class BallController : MonoBehaviour
 {
     public float speed = 5f;
     private Vector3 direction;
-    private Vector3 dtartPosition;
+    private Vector3 startPosition;
     private bool isMoving = false;
 
     void Start()
