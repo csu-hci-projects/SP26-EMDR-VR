@@ -1,1 +1,0 @@
-#this file is gonna trach the game state, from idle to playing to stopped 
