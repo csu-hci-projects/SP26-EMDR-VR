@@ -3,18 +3,47 @@ using UnityEngine;
 public class BallController : MonoBehaviour
 {
     public float speed = 5f;
+    public Transform paddleLeft;
+    public Transform paddleRight;
+    public AudioClip pingSound;
     private Vector3 direction;
     private Vector3 startPosition;
     private bool isMoving = false;
+    private AudioSource audioSource;
 
     void Start()
     {
         startPosition = transform.position;
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1f; 
     }
+
     void Update()
     {
         if (!isMoving) return;
+
         transform.position += direction * speed * Time.deltaTime;
+
+        if (transform.position.x <= paddleLeft.position.x + 0.5f && direction.x < 0)
+        {
+            direction.x = Mathf.Abs(direction.x);
+            PlayPing(paddleLeft.position); 
+        }
+
+        if (transform.position.x >= paddleRight.position.x - 0.5f && direction.x > 0)
+        {
+            direction.x = -Mathf.Abs(direction.x);
+            PlayPing(paddleRight.position); 
+        }
+    }
+
+    void PlayPing(Vector3 position)
+    {
+        if (pingSound != null)
+        {
+            audioSource.transform.position = position;
+            audioSource.PlayOneShot(pingSound);
+        }
     }
 
     public void Launch()
@@ -32,17 +61,6 @@ public class BallController : MonoBehaviour
     {
         Stop();
         transform.position = startPosition;
-    }
-    public void Bounce()
-    {
-        direction = -direction;
-    }
-
-    void OnCollisionEnter(Collision collision)
-    {
-        if (collision.gameObject.CompareTag("Paddle"))
-        {
-            Bounce();
-        }
+        direction = Vector3.zero;
     }
 }

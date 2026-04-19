@@ -1,12 +1,14 @@
 using UnityEngine;
 using UnityEngine.XR;
 using System.Collections.Generic;
+using UnityEngine.InputSystem;
+using XRInputDevice = UnityEngine.XR.InputDevice;
 
 public class PaddleController : MonoBehaviour
 {
     public bool isLeftController;
 
-    private InputDevice controller;
+    private XRInputDevice controller;
     private bool wasButtonPressed = false;
 
     void Start()
@@ -15,7 +17,7 @@ public class PaddleController : MonoBehaviour
             ? InputDeviceCharacteristics.Left | InputDeviceCharacteristics.Controller
             : InputDeviceCharacteristics.Right | InputDeviceCharacteristics.Controller;
 
-        var devices = new List<InputDevice>();
+        var devices = new List<XRInputDevice>();
         InputDevices.GetDevicesWithCharacteristics(characteristics, devices);
         if (devices.Count > 0) controller = devices[0];
     }
@@ -23,7 +25,12 @@ public class PaddleController : MonoBehaviour
     void Update()
     {
         bool buttonPressed = false;
-        controller.TryGetFeatureValue(CommonUsages.primaryButton, out buttonPressed);
+
+        #if UNITY_EDITOR
+            buttonPressed = Keyboard.current.spaceKey.wasPressedThisFrame;
+        #else
+            controller.TryGetFeatureValue(CommonUsages.primaryButton, out buttonPressed);
+        #endif
 
         if (buttonPressed && !wasButtonPressed)
         {
