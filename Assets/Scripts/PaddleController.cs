@@ -7,6 +7,9 @@ using XRInputDevice = UnityEngine.XR.InputDevice;
 public class PaddleController : MonoBehaviour
 {
     public bool isLeftController;
+    public float paddleSpeed = 4f;
+    public float yMin = -2.5f; 
+    public float yMax = 2.5f; 
 
     private XRInputDevice controller;
     private bool wasButtonPressed = false;
@@ -23,6 +26,12 @@ public class PaddleController : MonoBehaviour
     }
 
     void Update()
+    {
+        HandleStartStop();
+        HandlePaddleMovement();
+    }
+
+    void HandleStartStop()
     {
         bool buttonPressed = false;
 
@@ -43,5 +52,34 @@ public class PaddleController : MonoBehaviour
         }
 
         wasButtonPressed = buttonPressed;
+    }
+
+    void HandlePaddleMovement()
+    {
+        if (GameManager.Instance.CurrentState != GameManager.GameState.Playing) return;
+
+        float moveY = 0f;
+
+        #if UNITY_EDITOR
+            if (isLeftController)
+            {
+                if (Keyboard.current.upArrowKey.isPressed) moveY = 1f;
+                if (Keyboard.current.downArrowKey.isPressed) moveY = -1f;
+            }
+            else
+            {
+                if (Keyboard.current.wKey.isPressed) moveY = 1f;
+                if (Keyboard.current.sKey.isPressed) moveY = -1f;
+            }
+        #else
+            Vector2 joystick;
+            controller.TryGetFeatureValue(CommonUsages.primary2DAxis, out joystick);
+            moveY = joystick.y;
+        #endif
+
+        Vector3 pos = transform.position;
+        pos.y += moveY * paddleSpeed * Time.deltaTime;
+        pos.y = Mathf.Clamp(pos.y, yMin, yMax);
+        transform.position = pos;
     }
 }
