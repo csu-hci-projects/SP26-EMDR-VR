@@ -3,13 +3,14 @@ using UnityEngine.XR;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using XRInputDevice = UnityEngine.XR.InputDevice;
+using XRCommonUsages = UnityEngine.XR.CommonUsages;
 
 public class PaddleController : MonoBehaviour
 {
     public bool isLeftController;
     public float paddleSpeed = 4f;
-    public float yMin = -2.5f; 
-    public float yMax = 2.5f; 
+    public float yMin = -2.5f;
+    public float yMax = 2.5f;
 
     private XRInputDevice controller;
     private bool wasButtonPressed = false;
@@ -38,7 +39,7 @@ public class PaddleController : MonoBehaviour
         #if UNITY_EDITOR
             buttonPressed = Keyboard.current.spaceKey.wasPressedThisFrame;
         #else
-            controller.TryGetFeatureValue(CommonUsages.primaryButton, out buttonPressed);
+            controller.TryGetFeatureValue(XRCommonUsages.primaryButton, out buttonPressed);
         #endif
 
         if (buttonPressed && !wasButtonPressed)
@@ -73,7 +74,7 @@ public class PaddleController : MonoBehaviour
             }
         #else
             Vector2 joystick;
-            controller.TryGetFeatureValue(CommonUsages.primary2DAxis, out joystick);
+            controller.TryGetFeatureValue(XRCommonUsages.primary2DAxis, out joystick);
             moveY = joystick.y;
         #endif
 
