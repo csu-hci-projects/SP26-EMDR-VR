@@ -1,9 +1,5 @@
 using UnityEngine;
-using UnityEngine.XR;
-using System.Collections.Generic;
 using UnityEngine.InputSystem;
-using XRInputDevice = UnityEngine.XR.InputDevice;
-using XRCommonUsages = UnityEngine.XR.CommonUsages;
 
 public class PaddleController : MonoBehaviour
 {
@@ -12,63 +8,37 @@ public class PaddleController : MonoBehaviour
     public float yMin = -2.5f;
     public float yMax = 2.5f;
 
-    private XRInputDevice controller;
-    private bool controllerFound = false;  
-    private bool wasButtonPressed = false;
+    [Header("Assign from XRI Default Input Actions")]
+    public InputActionReference joystickAction;
 
-    void Start()
+    public InputActionReference buttonAction;
+
+    private void OnEnable()
     {
+        if (joystickAction != null) joystickAction.action.Enable();
+        if (buttonAction   != null) buttonAction.action.Enable();
+
+        if (buttonAction != null)
+            buttonAction.action.performed += OnButtonPressed;
+    }
+
+    private void OnDisable()
+    {
+        if (buttonAction != null)
+            buttonAction.action.performed -= OnButtonPressed;
+
+        if (joystickAction != null) joystickAction.action.Disable();
+        if (buttonAction   != null) buttonAction.action.Disable();
     }
 
     void Update()
     {
-        if (!controllerFound)
-            TryFindController();
-
-        HandleStartStop();
         HandlePaddleMovement();
-    }
-
-    void TryFindController()
-    {
-        var characteristics = isLeftController
-            ? InputDeviceCharacteristics.Left  | InputDeviceCharacteristics.Controller
-            : InputDeviceCharacteristics.Right | InputDeviceCharacteristics.Controller;
-
-        var devices = new List<XRInputDevice>();
-        InputDevices.GetDevicesWithCharacteristics(characteristics, devices);
-
-        if (devices.Count > 0)
-        {
-            controller = devices[0];
-            controllerFound = true;
-            Debug.Log($"[PaddleController] {(isLeftController ? "Left" : "Right")} controller found: {controller.name}");
-        }
-    }
-
-    void HandleStartStop()
-    {
-        bool buttonPressed = false;
 
         #if UNITY_EDITOR
-            buttonPressed = Keyboard.current.spaceKey.wasPressedThisFrame;
-        #else
-            // Only read input if we actually have a controller
-            if (controllerFound)
-                controller.TryGetFeatureValue(XRCommonUsages.primaryButton, out buttonPressed);
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+            TriggerGameState();
         #endif
-
-        if (buttonPressed && !wasButtonPressed)
-        {
-            if (GameManager.Instance.CurrentState == GameManager.GameState.Idle)
-                GameManager.Instance.StartGame();
-            else if (GameManager.Instance.CurrentState == GameManager.GameState.Playing)
-                GameManager.Instance.StopGame();
-            else if (GameManager.Instance.CurrentState == GameManager.GameState.Stopped)
-                GameManager.Instance.ResetGame();
-        }
-
-        wasButtonPressed = buttonPressed;
     }
 
     void HandlePaddleMovement()
@@ -78,28 +48,42 @@ public class PaddleController : MonoBehaviour
         float moveY = 0f;
 
         #if UNITY_EDITOR
-            if (isLeftController)
-            {
-                if (Keyboard.current.upArrowKey.isPressed)   moveY =  1f;
-                if (Keyboard.current.downArrowKey.isPressed) moveY = -1f;
-            }
-            else
-            {
-                if (Keyboard.current.wKey.isPressed) moveY =  1f;
-                if (Keyboard.current.sKey.isPressed) moveY = -1f;
-            }
+        if (isLeftController)
+        {
+            if (Keyboard.current.upArrowKey.isPressed)   moveY =  1f;
+            if (Keyboard.current.downArrowKey.isPressed) moveY = -1f;
+        }
+        else
+        {
+            if (Keyboard.current.wKey.isPressed) moveY =  1f;
+            if (Keyboard.current.sKey.isPressed) moveY = -1f;
+        }
         #else
-            if (controllerFound)
-            {
-                Vector2 joystick;
-                controller.TryGetFeatureValue(XRCommonUsages.primary2DAxis, out joystick);
-                moveY = joystick.y;
-            }
+        if (joystickAction != null)
+        {
+            Vector2 stick = joystickAction.action.ReadValue<Vector2>();
+            moveY = stick.y;
+        }
         #endif
 
         Vector3 pos = transform.position;
         pos.y += moveY * paddleSpeed * Time.deltaTime;
         pos.y = Mathf.Clamp(pos.y, yMin, yMax);
         transform.position = pos;
+    }
+
+    void OnButtonPressed(InputAction.CallbackContext ctx)
+    {
+        TriggerGameState();
+    }
+
+    void TriggerGameState()
+    {
+        if (GameManager.Instance.CurrentState == GameManager.GameState.Idle)
+            GameManager.Instance.StartGame();
+        else if (GameManager.Instance.CurrentState == GameManager.GameState.Playing)
+            GameManager.Instance.StopGame();
+        else if (GameManager.Instance.CurrentState == GameManager.GameState.Stopped)
+            GameManager.Instance.ResetGame();
     }
 }
