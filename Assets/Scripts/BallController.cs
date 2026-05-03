@@ -34,15 +34,13 @@ public class BallController : MonoBehaviour
         {
             if (Mathf.Abs(transform.position.y - paddleLeft.position.y) < 1.2f)
             {
-                // Random angle bounce
-                float randomY = Random.Range(-0.8f, 0.8f);
+                float randomY = Random.Range(-0.35f, 0.35f);
                 direction = new Vector3(1f, randomY, 0f).normalized;
                 PlayPing(paddleLeft.position);
                 HapticFeedback(true);
             }
             else
             {
-                // Missed the paddle - reset ball
                 ResetBall();
             }
         }
@@ -51,7 +49,7 @@ public class BallController : MonoBehaviour
         {
             if (Mathf.Abs(transform.position.y - paddleRight.position.y) < 1.2f)
             {
-                float randomY = Random.Range(-0.8f, 0.8f);
+                float randomY = Random.Range(-0.35f, 0.35f);
                 direction = new Vector3(-1f, randomY, 0f).normalized;
                 PlayPing(paddleRight.position);
                 HapticFeedback(false);
@@ -94,7 +92,7 @@ public class BallController : MonoBehaviour
 
     public void Launch()
     {
-        float randomY = Random.Range(-0.5f, 0.5f);
+        float randomY = Random.Range(-0.35f, 0.35f);
         direction = new Vector3(1f, randomY, 0f).normalized;
         isMoving = true;
     }
@@ -109,6 +107,7 @@ public class BallController : MonoBehaviour
         Stop();
         transform.position = startPosition;
         direction = Vector3.zero;
-        Invoke("Launch", 0.5f);
+
+        GameManager.Instance.ResetGame();
     }
 }
