@@ -35,7 +35,10 @@ public class GameManager : MonoBehaviour
     public void ResetGame()
     {
         CurrentState = GameState.Idle;
-        ball.ResetBall();  // only resets position, does NOT launch
+
+        ball.Stop();
+        ball.transform.position = ball.StartPosition;
+
         UpdateText();
     }
 

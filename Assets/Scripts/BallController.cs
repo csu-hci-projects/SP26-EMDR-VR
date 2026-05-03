@@ -7,14 +7,15 @@ public class BallController : MonoBehaviour
     public Transform paddleRight;
     public AudioClip pingSound;
 
+    public Vector3 StartPosition { get; private set; }
+
     private Vector3 direction;
-    private Vector3 startPosition;
     private bool isMoving = false;
     private AudioSource audioSource;
 
     void Start()
     {
-        startPosition = transform.position;
+        StartPosition = transform.position;
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1f;
     }
@@ -105,9 +106,7 @@ public class BallController : MonoBehaviour
     public void ResetBall()
     {
         Stop();
-        transform.position = startPosition;
         direction = Vector3.zero;
-
         GameManager.Instance.ResetGame();
     }
 }
