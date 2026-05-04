@@ -1,8 +1,13 @@
 # EMDR - VR 
 
 ## Videos 
+Checkpoint #1:
 - [Checkpoint Update](https://youtu.be/AxYwy7aAxfk)
 - [Prototype Demoooo](https://youtu.be/qDXZ6uSjKYY)
+
+Checkpoint #2:
+- [Code & Prototype Discussion](https://youtu.be/ePx4P11E2eU)
+- [Current State Updates](working on it)
 
 ## Code Overview
 
