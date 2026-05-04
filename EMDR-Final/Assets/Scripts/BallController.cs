@@ -31,9 +31,11 @@ public class BallController : MonoBehaviour
 
         if (transform.position.x <= paddleLeft.position.x + 0.5f && direction.x < 0)
         {
+            //checks if paddle made contact
             if (Mathf.Abs(transform.position.y - paddleLeft.position.y) < 1.2f)
             {
                 float randomY = Random.Range(-0.35f, 0.35f);
+                //ball launches
                 direction = new Vector3(1f, randomY, 0f).normalized;
                 PlayPing(paddleLeft.position);
                 HapticFeedback(true);
@@ -83,6 +85,7 @@ public class BallController : MonoBehaviour
         if (devices.Count > 0)
         {
             UnityEngine.XR.HapticCapabilities caps;
+            //feedback 
             if (devices[0].TryGetHapticCapabilities(out caps) && caps.supportsImpulse)
                 devices[0].SendHapticImpulse(0, 0.7f, 0.1f);
         }

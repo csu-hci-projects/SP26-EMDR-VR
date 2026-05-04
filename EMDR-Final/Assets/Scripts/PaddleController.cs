@@ -17,23 +17,25 @@ public class PaddleController : MonoBehaviour
         if (!device.isValid)
         {
             var node = isLeftController ? XRNode.LeftHand : XRNode.RightHand;
+            //grabs the physical controller directly
             device = InputDevices.GetDeviceAtXRNode(node);
         }
 
         if (!device.isValid) return;
-
-        // ── Move paddle ──────────────────────────────
+// reads raw thumbstick value 
         device.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 stick);
         if (Mathf.Abs(stick.y) > 0.1f)
         {
             Vector3 pos = transform.position;
             pos.y += stick.y * paddleSpeed * Time.deltaTime;
+            //keeps paddle within bounds 
             pos.y = Mathf.Clamp(pos.y, yMin, yMax);
             transform.position = pos;
         }
 
-        // ── Start/stop button ────────────────────────
+        //Start/stop button 
         device.TryGetFeatureValue(CommonUsages.primaryButton, out bool pressed);
+// only tiggers on button press, not per frame 
         if (pressed && !wasPressed)
             TriggerGameState();
         wasPressed = pressed;

@@ -5,7 +5,7 @@ using System.Collections;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-
+//five possible states 
     public enum GameState
     {
         Welcome,
@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
             CurrentState == GameState.Paused ||
             CurrentState == GameState.OutOfBounds)
         {
+            //triggers countdown before every launch
             StartCoroutine(CountdownThenLaunch());
             return;
         }
@@ -82,7 +83,7 @@ public class GameManager : MonoBehaviour
     void UpdateText()
     {
         if (instructionsText == null) return;
-
+//every state has its own instructions that are updated live as the state changes
         switch (CurrentState)
         {
             case GameState.Welcome:
