@@ -1,32 +1,34 @@
-# EMDR - VR 
 
-## Videos 
-Checkpoint #1:
-- [Checkpoint Update](https://youtu.be/AxYwy7aAxfk)
-- [Prototype Demoooo](https://youtu.be/qDXZ6uSjKYY)
+Scripts
 
-Checkpoint #2:
-- [Code & Prototype Discussion](https://youtu.be/ePx4P11E2eU)
-- [Current State Updates](working on it)
+GameManager.cs
 
-## Code Overview
+Controls the full game flow through five states: welcome, instructions, countdown, playing, and paused.
+ Displays dynamic text in the headset at every stage guiding the user through 
+how to start, pause, and resume. Includes a 3-2-1 coroutine countdown, 
+and when ball goes out of bounds the state switches to outofbounds and prompts user to 
+press A to try again. 
 
-### GameManager.cd
-Controls the game state (idle, playing, stopped).
-Start/stop/reset logic lives here 
+BallController.cs
 
-### BallController.cs
-Moves the ball left and right, in charge of paddle bouncing, and plays spatial audio pings on contact for auditory bilateral simulation
+Moves the ball with a random vertical angle on each launch and bounce so no two bounces look 
+the same. Includes miss detection so if the paddle doesnt make contact the ball resets and 
+the game returns to the Welcome state. Plays spatial audio pings from whichever side the ball 
+bounces on for auditory bilateral stimulation. Triggers haptic vibration on the corresponding 
+left or right controller for tactile bilateral stimulation.
 
-### PaddleController.cs 
-Reads Meta Quest controller input and in editor uses spacebar to trigger start, stop, and reset through GameManager
+PaddleController.cs
 
-## Overleaf Link
+Reads Meta Quest controller input directly from hardware using CommonUsages.primary2DAxis and 
+InputDevices.GetDeviceAtXRNode, bypassing the XRI action map system entirely for reliable 
+on-device input. Moves paddles up and down using the thumbsticks with a dead zone to prevent 
+drift and Y-axis clamping so paddles can't leave the play area. Retries controller detection 
+every frame until both controllers are found. Button 
+press uses a wasPressed flag so it fires once per press rather than every frame. Spacebar and 
+arrow keys available for editor testing.
 
-- [Research Paper](https://www.overleaf.com/8782227375xkpchpncdhqk#13cf77)
-## Next Steps 
-- Get prototype running on Meta Quest headset
-- Add paddlle movement using VR controller joysticks so users can move paddles up and down
-- Add haptic feedback so controllers vibrate when the ball hits each paddle 
-- Improve environment design and visuals 
+Next Steps
+- Begin participant data collection
+- Complete results and discussion sections of the research paper 
+  once data collection is finished
 
