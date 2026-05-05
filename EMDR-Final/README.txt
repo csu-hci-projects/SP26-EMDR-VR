@@ -1,3 +1,10 @@
+Checkpoint 2 videos:
+- [Prototype demonstration & code discussion](https://youtu.be/ePx4P11E2eU)
+- [Project updates & areas of completion](https://youtu.be/_TK1D2wyDbY)
+
+Link to OverLeaf:
+[The Effects of VR Bilateral Stimulation
+Application on Emotional Stress](waiting on link)
 
 Scripts
 
